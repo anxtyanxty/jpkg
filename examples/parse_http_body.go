@@ -11,7 +11,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-  defer resp.Body.Close()
+  	defer resp.Body.Close()
 	author, err := jpkg.QueryJSONReader(resp.Body, "['slideshow']['author']")
 	if err != nil {
 		panic(err)
