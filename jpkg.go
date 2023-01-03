@@ -38,7 +38,14 @@ func QueryJSON(data map[interface{}]interface{}, jpath_query string) (interface{
 				return nil, err
 			}
 
-			interface_kind = reflect.TypeOf(interface_value).Kind()
+			interface_type := reflect.TypeOf(interface_value)
+			if interface_type == nil && index == len(query)-1 {
+				break
+			} else if interface_type == nil {
+				return nil, fmt.Errorf("could not progress any further, type is null, last item evaluated: %s", item.Data)	
+			}
+			
+			interface_kind = interface_type.Kind()
 			if !is_indexable(interface_kind) && index != len(query)-1 {
 				return nil, fmt.Errorf("could not progress any further, last item evaluated: %s", item.Data)
 			}
