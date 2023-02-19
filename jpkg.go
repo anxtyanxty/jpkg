@@ -13,9 +13,15 @@ var (
 	query_expr, _ = regexp.Compile(`\[(.*?)\]`)
 )
 
-type Item struct {
-	IsIndex bool
-	Data    string
+func LoadJObject(json_bytes []byte) (*JObject, error) {
+
+	object := &JObject{
+		data: nil,
+	}
+	if err := json.Unmarshal(json_bytes, &object.data); err != nil {
+		return nil, err
+	}
+	return object, nil
 }
 
 func QueryJSON(data map[interface{}]interface{}, jpath_query string) (interface{}, error) {
@@ -42,9 +48,9 @@ func QueryJSON(data map[interface{}]interface{}, jpath_query string) (interface{
 			if interface_type == nil && index == len(query)-1 {
 				break
 			} else if interface_type == nil {
-				return nil, fmt.Errorf("could not progress any further, type is null, last item evaluated: %s", item.Data)	
+				return nil, fmt.Errorf("could not progress any further, type is null, last item evaluated: %s", item.Data)
 			}
-			
+
 			interface_kind = interface_type.Kind()
 			if !is_indexable(interface_kind) && index != len(query)-1 {
 				return nil, fmt.Errorf("could not progress any further, last item evaluated: %s", item.Data)

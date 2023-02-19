@@ -6,17 +6,17 @@ import (
 	"strings"
 )
 
-func parse_query(query string) []Item {
+func parse_query(query string) []item {
 	submatches := query_expr.FindAllStringSubmatch(query, -1)
 	matches := []string{}
 	for _, m := range submatches {
 		matches = append(matches, m[1])
 	}
 
-	items := []Item{}
+	items := []item{}
 	for _, m := range matches {
 		data, is_index := remove_quotes(m)
-		items = append(items, Item{Data: data, IsIndex: is_index})
+		items = append(items, item{Data: data, IsIndex: is_index})
 	}
 
 	return items
