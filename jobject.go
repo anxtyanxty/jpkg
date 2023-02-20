@@ -57,7 +57,7 @@ func (obj *JObject) QueryArray(path string) ([]*JObject, error) {
 		return nil, err
 	}
 	undefined_type := reflect.TypeOf(undefined_data)
-	if undefined_type.Kind() != reflect.Array {
+	if undefined_type.Kind() != reflect.Slice {
 		return nil, fmt.Errorf("the type is invalid, you are asking for a []*JObject but the type is %s", undefined_type)
 	}
 
@@ -77,7 +77,7 @@ func (obj *JObject) QueryStringArray(path string) ([]string, error) {
 		return nil, err
 	}
 	undefined_type := reflect.TypeOf(undefined_data)
-	if undefined_type.Kind() != reflect.Array {
+	if undefined_type.Kind() != reflect.Slice {
 		return nil, fmt.Errorf("the type is invalid, you are asking for a []string but the type is %s", undefined_type)
 	}
 
@@ -94,7 +94,7 @@ func (obj *JObject) QueryDecimalArray(path string) ([]float64, error) {
 		return nil, err
 	}
 	undefined_type := reflect.TypeOf(undefined_data)
-	if undefined_type.Kind() != reflect.Array {
+	if undefined_type.Kind() != reflect.Slice {
 		return nil, fmt.Errorf("the type is invalid, you are asking for a []float64 but the type is %s", undefined_type)
 	}
 
@@ -127,7 +127,7 @@ func (obj *JObject) QueryBooleanArray(path string) ([]bool, error) {
 		return nil, err
 	}
 	undefined_type := reflect.TypeOf(undefined_data)
-	if undefined_type.Kind() != reflect.Array {
+	if undefined_type.Kind() != reflect.Slice {
 		return nil, fmt.Errorf("the type is invalid, you are asking for a []bool but the type is %s", undefined_type)
 	}
 
