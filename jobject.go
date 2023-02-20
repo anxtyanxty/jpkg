@@ -38,6 +38,18 @@ func (obj *JObject) QueryDecimal(path string) (float64, error) {
 	return undefined_data.(float64), nil
 }
 
+func (obj *JObject) QueryBoolean(path string) (bool, error) {
+	undefined_data, err := QueryJSONInterface(obj.data, path)
+	if err != nil {
+		return false, err
+	}
+	undefined_type := reflect.TypeOf(undefined_data)
+	if undefined_type.Kind() != reflect.Bool {
+		return false, fmt.Errorf("the type is invalid, you are asking for boolean but the type is %s", undefined_type)
+	}
+	return undefined_data.(bool), nil
+}
+
 func (obj *JObject) QueryArray(path string) ([]*JObject, error) {
 
 	undefined_data, err := QueryJSONInterface(obj.data, path)
@@ -57,6 +69,73 @@ func (obj *JObject) QueryArray(path string) ([]*JObject, error) {
 	}
 
 	return objects, nil
+}
+
+func (obj *JObject) QueryStringArray(path string) ([]string, error) {
+	undefined_data, err := QueryJSONInterface(obj.data, path)
+	if err != nil {
+		return nil, err
+	}
+	undefined_type := reflect.TypeOf(undefined_data)
+	if undefined_type.Kind() != reflect.Array {
+		return nil, fmt.Errorf("the type is invalid, you are asking for a []string but the type is %s", undefined_type)
+	}
+
+	if undefined_type.Elem().Kind() != reflect.String {
+		return nil, fmt.Errorf("the type is invalid, you are asking for a element type string but the element type is %s", undefined_type.Elem())
+	}
+
+	return undefined_data.([]string), nil
+}
+
+func (obj *JObject) QueryDecimalArray(path string) ([]float64, error) {
+	undefined_data, err := QueryJSONInterface(obj.data, path)
+	if err != nil {
+		return nil, err
+	}
+	undefined_type := reflect.TypeOf(undefined_data)
+	if undefined_type.Kind() != reflect.Array {
+		return nil, fmt.Errorf("the type is invalid, you are asking for a []float64 but the type is %s", undefined_type)
+	}
+
+	if undefined_type.Elem().Kind() != reflect.Float64 {
+		return nil, fmt.Errorf("the type is invalid, you are asking for a element type float64 but the element type is %s", undefined_type.Elem())
+	}
+
+	return undefined_data.([]float64), nil
+}
+
+func (obj *JObject) QueryIntArray(path string) ([]int, error) {
+
+	decimal_array, err := obj.QueryDecimalArray(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var numbers []int
+	for _, decimal := range decimal_array {
+		numbers = append(numbers, int(decimal))
+	}
+
+	return numbers, nil
+}
+
+func (obj *JObject) QueryBooleanArray(path string) ([]bool, error) {
+
+	undefined_data, err := QueryJSONInterface(obj.data, path)
+	if err != nil {
+		return nil, err
+	}
+	undefined_type := reflect.TypeOf(undefined_data)
+	if undefined_type.Kind() != reflect.Array {
+		return nil, fmt.Errorf("the type is invalid, you are asking for a []bool but the type is %s", undefined_type)
+	}
+
+	if undefined_type.Elem().Kind() != reflect.Float64 {
+		return nil, fmt.Errorf("the type is invalid, you are asking for a element type bool but the element type is %s", undefined_type.Elem())
+	}
+
+	return undefined_data.([]bool), nil
 }
 
 func (obj *JObject) QueryObject(path string) (*JObject, error) {
