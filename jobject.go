@@ -1,6 +1,7 @@
 package jpkg
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 )
@@ -214,6 +215,40 @@ func (obj *JObject) ContainsKey(key string) bool {
 	return result
 }
 
-func (obj *JObject) Raw(path string) interface{} {
+func (obj *JObject) Raw() interface{} {
 	return obj.data
+}
+
+func QueryGeneric[T any](object *JObject, path string) (*T, error) {
+	undefined_data, err := QueryJSONInterface(object.data, path)
+	if err != nil {
+		return nil, err
+	}
+	body, err := json.Marshal(undefined_data)
+	if err != nil {
+		return nil, err
+	}
+
+	var generic_value T
+	if err := json.Unmarshal(body, &generic_value); err != nil {
+		return nil, err
+	}
+	return &generic_value, nil
+}
+
+func QueryGenericSlice[T any](object *JObject, path string) ([]*T, error) {
+	undefined_data, err := QueryJSONInterface(object.data, path)
+	if err != nil {
+		return nil, err
+	}
+	body, err := json.Marshal(undefined_data)
+	if err != nil {
+		return nil, err
+	}
+
+	var generic_value []*T
+	if err := json.Unmarshal(body, &generic_value); err != nil {
+		return nil, err
+	}
+	return generic_value, nil
 }
