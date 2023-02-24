@@ -17,10 +17,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	author, err := jpkg.QueryJSONReader(resp.Body, "['slideshow']['author']")
+	defer resp.Body.Close()
+	
+	buffer := &bytes.Buffer{}
+	if _, err := buffer.ReadFrom(resp.Body); err != nil {
+		panic(err)
+	}
+	
+	json_object, err := jpkg.LoadJObject(buffer.Bytes())
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("The author of this book is", author)
+	
+	// author is of type string
+	author, err := json_object.QueryString("['slideshow']['author']")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("The author of this book is %s\n", author)
 }
 ```
